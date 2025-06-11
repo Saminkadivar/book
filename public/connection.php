@@ -1,36 +1,33 @@
+<?php
+// === Load PostgreSQL connection variables from environment ===
+$host = getenv('DB_HOST');
+$port = getenv('DB_PORT') ?: '5432';
+$dbname = getenv('DB_NAME');
+$user = getenv('DB_USER');
+$pass = getenv('DB_PASS');
 
-  
-  <?php
-
-$host = getenv('dpg-d14lgd6uk2gs73b0rr50-a');
-$port = getenv('5432');
-$dbname = getenv('mini_project_i0kw');
-$user = getenv('mini_project_i0kw_user');
-$pass = getenv('1Sc7e6YK7bWVeadJLOByKPpQjQgrOOND');
-
-echo "<pre>";
-echo "DB_HOST: $host\n";
-echo "DB_PORT: $port\n";
-echo "DB_NAME: $dbname\n";
-echo "DB_USER: $user\n";
-echo "DB_PASS: " . ($pass ? 'SET' : 'NOT SET') . "\n";
-echo "</pre>";
-
+// === Connect to PostgreSQL ===
 try {
-    $con = new PDO(
-        "pgsql:host=$host;port=$port;dbname=$dbname",
-        $user,
-        $pass
-    );
-    $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "✅ Connected to PostgreSQL!";
+    $pdo = new PDO("pgsql:host=$host;port=$port;dbname=$dbname", $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "<strong>✅ Connected to PostgreSQL successfully.</strong><br><br>";
 } catch (PDOException $e) {
-    echo "❌ Database connection failed: " . $e->getMessage();
+    die("❌ Connection failed: " . $e->getMessage());
 }
 
+// === Load and run SQL file ===
+$sqlFile = 'mini_project_pg.sql';
 
-  define('SERVER_PATH', $_SERVER['DOCUMENT_ROOT'] . '/');
-  const SITE_PATH = 'localhost//BscitMiniProject3rdSem/';
-  
-  
-  ?>
+if (!file_exists($sqlFile)) {
+    die("❌ SQL file not found: <code>$sqlFile</code>");
+}
+
+$sql = file_get_contents($sqlFile);
+
+try {
+    $pdo->exec($sql);
+    echo "<strong>✅ SQL file <code>$sqlFile</code> imported successfully!</strong>";
+} catch (PDOException $e) {
+    echo "❌ Import failed: " . $e->getMessage();
+}
+?>
