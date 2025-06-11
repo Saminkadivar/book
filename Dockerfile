@@ -1,14 +1,10 @@
-# Use official PHP image
-FROM php:8.2-cli
+FROM php:8.2-apache
 
-# Set working directory
-WORKDIR /app
+# Install mysqli and other needed extensions
+RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
-# Copy everything into the container
-COPY . .
+# Copy all files into container
+COPY . /var/www/html/
 
-# Expose port 10000 (Render requirement)
-EXPOSE 10000
-
-# Start the PHP server serving files from /app/public
-CMD ["php", "-S", "0.0.0.0:10000", "-t", "public"]
+# Expose the port
+EXPOSE 80
