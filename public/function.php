@@ -1,44 +1,36 @@
 <?php
 //  to get data from form
   
-function getSafeValue($con, $str)
-  {
-    if ($str != '') {
-      $str = trim($str);
-      $str = stripslashes($str);
-      $str = htmlspecialchars($str);
-      return mysqli_real_escape_string($con, $str);
-    }
-  }
+// Use this function to safely sanitize input (for display or storage)
+function getSafeValue($str) {
+    return htmlspecialchars(trim($str), ENT_QUOTES, 'UTF-8');
+}
 
-//  to get book data from database
-  function getProduct($con, $limit = '', $categoryId = '', $bookId = '', $orderBy = '')
-  {
-    $sql = "select * from books where status=1";
-    
-    if ($orderBy != '') {
-      $sql .= " order by $orderBy";
+
+function getProducts($con, $limit = 10, $search = '', $orderBy = 'id DESC') {
+    try {
+        $query = "SELECT * FROM books";
+        $params = [];
+
+        if (!empty($search)) {
+            $query .= " WHERE name ILIKE :search OR author ILIKE :search";
+            $params['search'] = '%' . $search . '%';
+        }
+
+        $query .= " ORDER BY $orderBy LIMIT :limit";
+        $stmt = $con->prepare($query);
+        foreach ($params as $key => &$val) {
+            $stmt->bindParam(':' . $key, $val, PDO::PARAM_STR);
+        }
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo "❌ Query Error: " . $e->getMessage();
+        return [];
     }
-    
-    if ($limit != '') {
-      $sql .= " limit $limit";
-    }
-    
-    if ($bookId != '') {
-      $sql .= " and id=$bookId";
-    }
-    
-    if ($categoryId != '') {
-      $sql .= " and category_id=$categoryId";
-    }
-    
-    $res = mysqli_query($con, $sql);
-    $data = array();
-    while ($row = mysqli_fetch_assoc($res)) {
-      $data[] = $row;
-    }
-    return $data;
-  }
+}
 
 //To update the user data
   function updateProfile($con, $changeName = '', $changeEmail = '', $changeMobile = '', $changePassword = '')
