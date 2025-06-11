@@ -8,8 +8,8 @@ $pass = getenv('DB_PASS');
 
 // === Connect to PostgreSQL ===
 try {
-    $pdo = new PDO("pgsql:host=$host;port=$port;dbname=$dbname", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $con = new PDO("pgsql:host=$host;port=$port;dbname=$dbname", $user, $pass);
+    $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     echo "<strong>✅ Connected to PostgreSQL successfully.</strong><br><br>";
 } catch (PDOException $e) {
     die("❌ Connection failed: " . $e->getMessage());
@@ -25,7 +25,7 @@ if (!file_exists($sqlFile)) {
 $sql = file_get_contents($sqlFile);
 
 try {
-    $pdo->exec($sql);
+    $con->exec($sql);
     echo "<strong>✅ SQL file <code>$sqlFile</code> imported successfully!</strong>";
 } catch (PDOException $e) {
     echo "❌ Import failed: " . $e->getMessage();
