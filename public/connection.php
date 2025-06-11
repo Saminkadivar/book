@@ -1,9 +1,10 @@
 <?php
-  session_start();
-  $con = mysqli_connect("localhost", "root", "", "mini_project");
-  if ($con->connect_error) {
-    die("Connection failed: " . $con->connect_error);
-  }
+try {
+    $conn = new PDO("pgsql:host=" . getenv('DB_HOST') . ";port=" . getenv('DB_PORT') . ";dbname=" . getenv('DB_NAME'), getenv('DB_USER'), getenv('DB_PASS'));
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+    echo "Database connection failed: " . $e->getMessage();
+}
 
   
   
