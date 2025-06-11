@@ -16,7 +16,7 @@ try {
 }
 
 // === Load and run SQL file ===
-$sqlFile = 'mini_project.sql';
+$sqlFile = 'mini_projects.sql';
 
 if (!file_exists($sqlFile)) {
     die("❌ SQL file not found: <code>$sqlFile</code>");
