@@ -1,9 +1,5 @@
 <?php
 // Start session only if it's not already started
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 // Define constants if not already defined
 if (!defined('SERVER_PATH')) {
     define('SERVER_PATH', $_SERVER['DOCUMENT_ROOT'] . '/');
