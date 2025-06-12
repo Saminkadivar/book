@@ -32,6 +32,15 @@ CREATE TABLE admin (
   created_at TIMESTAMP NOT NULL DEFAULT current_timestamp
 );
 
+-- Insert default admin user
+INSERT INTO admin (email, password, name, role)
+VALUES (
+  'admin@bookheaven.com',
+  crypt('admin123', gen_salt('bf')),
+  'Super Admin',
+  'Super Admin'
+);
+
 -- --------------------------------------------------------
 
 --
