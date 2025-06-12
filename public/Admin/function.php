@@ -12,11 +12,8 @@
     die();
   }
   
-  function getSafeValue($con, $str)
-  {
-    if ($str != '') {
-      $str = trim($str);
-      return mysqli_real_escape_string($con, $str);
-    }
+function getSafeValue($con, $value) {
+    return htmlspecialchars(strip_tags(trim($value)));
+}
   }
 
