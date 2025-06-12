@@ -15,5 +15,6 @@
 function getSafeValue($con, $value) {
     return htmlspecialchars(strip_tags(trim($value)));
 }
-  }
+
+
 
