@@ -219,11 +219,6 @@ VALUES (
   'Super Admin'
 );
 
-COPY public._admin (id, email, password, name, role, created_at) FROM stdin;
-7	black@gmail.com	e10adc3949ba59abbe56e057f20f883e	Black	Super Admin	2025-02-06 22:36:20
-15	saminkadivar1@gmail.com	e10adc3949ba59abbe56e057f20f883e	samin	manager	2025-03-05 11:28:18
-19	book@gmail.com	$2y$10$RBWfUBKpVcc1SJj592Pj3OlM0QQ4MmWVsyYOCcem20wt5BnlrMSHK	Book	Admin	2025-03-13 09:32:43
-\.
 
 
 --
