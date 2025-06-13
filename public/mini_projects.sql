@@ -20,6 +20,7 @@ SET row_security = off;
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 
 --
@@ -209,6 +210,14 @@ ALTER TABLE public._users OWNER TO rebasedata;
 --
 -- Data for Name: _admin; Type: TABLE DATA; Schema: public; Owner: rebasedata
 --
+-- Insert Super Admin user (password: admin123)
+INSERT INTO admin (email, password, name, role)
+VALUES (
+  'admin@bookheaven.com',
+  crypt('admin123', gen_salt('bf')),
+  'Super Admin',
+  'Super Admin'
+);
 
 COPY public._admin (id, email, password, name, role, created_at) FROM stdin;
 7	black@gmail.com	e10adc3949ba59abbe56e057f20f883e	Black	Super Admin	2025-02-06 22:36:20
