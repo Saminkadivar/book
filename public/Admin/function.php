@@ -12,9 +12,10 @@
     die();
   }
   
-function getSafeValue($con, $value) {
-    return htmlspecialchars(strip_tags(trim($value)));
+function getSafeValue($str) {
+    return trim(strip_tags($str));
 }
+?>
 
 
 
