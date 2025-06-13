@@ -6,6 +6,7 @@ if (!defined('BOOK_IMAGE_SITE_PATH')) {
 
 require('header.php');
 $defaultImg = 'images/default-book.png';
+$products = getProduct($con);
 
 function getProduct($con, $limit = 4, $category = '', $search = '', $orderBy = 'id DESC') {
     $query = "SELECT * FROM books ORDER BY $orderBy LIMIT :limit";
