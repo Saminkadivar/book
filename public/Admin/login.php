@@ -4,31 +4,27 @@ require('../function.php');
 
 $msg = '';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = getSafeValue($con, $_POST['email']);
-    $password = getSafeValue($con, $_POST['password']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = getSafeValue($_POST['email']);
+    $password = getSafeValue($_POST['password']);
 
     $stmt = $con->prepare("SELECT * FROM admin WHERE email = :email LIMIT 1");
     $stmt->execute(['email' => $email]);
     $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($admin) {
-        if (password_verify($password, $admin['password'])) {
-            $_SESSION['ADMIN_LOGIN'] = 'yes';
-            $_SESSION['ADMIN_EMAIL'] = $admin['email'];
-            $_SESSION['ADMIN_NAME'] = $admin['name'];
-            $_SESSION['ADMIN_ROLE'] = $admin['role'];
-
-            header('Location: dashboard.php');
-            exit();
-        } else {
-            $msg = "❌ Invalid Password!";
-        }
+    if ($admin && password_verify($password, $admin['password'])) {
+        $_SESSION['ADMIN_LOGIN'] = 'yes';
+        $_SESSION['ADMIN_EMAIL'] = $admin['email'];
+        $_SESSION['ADMIN_NAME'] = $admin['name'];
+        $_SESSION['ADMIN_ROLE'] = $admin['role'];
+        header("Location: dashboard.php");
+        exit;
     } else {
-        $msg = "❌ Invalid Email!";
+        $msg = "❌ Invalid Email or Password";
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
