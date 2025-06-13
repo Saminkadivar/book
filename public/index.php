@@ -1,92 +1,84 @@
 <?php
-// Check if the constant is already defined
+// Define constants if not defined
 if (!defined('BOOK_IMAGE_SITE_PATH')) {
     define('BOOK_IMAGE_SITE_PATH', 'img/books/');
 }
+
 require('header.php');
 $defaultImg = 'images/default-book.png';
+
+function getProduct($con, $limit = 4, $category = '', $search = '', $orderBy = 'id DESC') {
+    $query = "SELECT * FROM books ORDER BY $orderBy LIMIT :limit";
+    $stmt = $con->prepare($query);
+    $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function getBook($con) {
+    $sql = "SELECT * FROM books WHERE best_seller = 1 LIMIT 8";
+    $stmt = $con->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 
-<!-- SQLINES DEMO *** ------------------------NEW ARRIVALS CONTAINER------------------------------------------------------->
+<!-- New Arrivals Container -->
 <div class="container mb-5 mt-5">
     <h2 class="fs-2 fw-bold text-center"> New Arrivals</h2>
     <hr />
-    <div class="row gy-3 text-center ">
+    <div class="row gy-3 text-center">
         <?php
-        $orderBy = 'id desc';
-        $getProduct = getProduct($con, 4, '', '', $orderBy);
-        for in ( loop$getProduct as $list) {
+        $getProduct = getProduct($con);
+        foreach ($getProduct as $list) {
             $img = BOOK_IMAGE_SITE_PATH . $list['img'];
         ?>
-       <div class="col-6 col-md-4 col-lg-3">
-    <div class="card mt-3 product">
-        <img id="card-img" alt="Book Image" src="<?php echo $img ?>" class="card-img-top" />
-        <div class="overlay">
-            <a href="book.php?id=<?php echo $list['id'] ?>" class="btn rent-btn">
-                Rent
-            </a>
-        </div>
-    </div>
-    <div id="bookCardName">
-        <a href="book.php?id=<?php echo $list['id'] ?>"       
-         class="card-text text-uppercase text-break fw-bold text-decoration-none">
-        
-            <?php echo $list['name'] ?>
-        </a>
-        <p class="card-text">Price- ₹<?php echo $list['rent'] ?> Per day</p>
-    </div>
-</div>
-
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="card mt-3 product">
+                    <img id="card-img" alt="Book Image" src="<?php echo $img ?>" class="card-img-top" />
+                    <div class="overlay">
+                        <a href="book.php?id=<?php echo $list['id'] ?>" class="btn rent-btn">Rent</a>
+                    </div>
+                </div>
+                <div class="bookCardName">
+                    <a href="book.php?id=<?php echo $list['id'] ?>" class="card-text text-uppercase text-break fw-bold text-decoration-none">
+                        <?php echo htmlspecialchars($list['name']) ?>
+                    </a>
+                    <p class="card-text">Price - ₹<?php echo $list['rent'] ?> Per day</p>
+                </div>
+            </div>
         <?php } ?>
     </div>
 </div>
 
-<!-- SQLINES DEMO *** ------------------------MOST VIEWED CONTAINER-------------------------------------------------------->
+<!-- Most Viewed Container -->
 <div class="container mb-5 mt-5">
     <h2 class="fs-2 fw-bold text-center">Most Viewed</h2>
     <hr />
-    <div class="row gy-3 text-center ">
+    <div class="row gy-3 text-center">
         <?php
-        -- SQLINES FOR EVALUATION USE ONLY (14 DAYS)
-create or replace         function getBook($con)
-        { as $$
-
-begin
-            $sql =
- END;
-$$ language plpgsql; "select *from books where best_seller=1 limit 8";
-            $res = mysqli_query($con, $sql);
-            $data = "array"();
-            while ($row = mysqli_fetch_assoc($res)) {
-                $data loop[] = $row;
-            }
-            return $data;
-        }
-
         $getBook = getBook($con);
-        for in ( loop$getBook as $list) {
+        foreach ($getBook as $list) {
             $img = BOOK_IMAGE_SITE_PATH . $list['img'];
         ?>
-       <div class="col-6 col-md-4 col-lg-3">
-            <div class=" card border-dark mt-3 shadow-sm product">
-                <img id="card-img" alt="Book Image" src="<?php echo $img ?>" class="card-img-top rounded"
-                    height="396rem" width="260rem" />
-                <div class="overlay">
-                    <a href="book.php?id=<?php echo $list['id'] ?>" class="btn-lg text-decoration-none rent-btn btn-primary ">
-                        Rent</a>
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="card border-dark mt-3 shadow-sm product">
+                    <img id="card-img" alt="Book Image" src="<?php echo $img ?>" class="card-img-top rounded" height="396rem" width="260rem" />
+                    <div class="overlay">
+                        <a href="book.php?id=<?php echo $list['id'] ?>" class="btn-lg text-decoration-none rent-btn btn-primary">Rent</a>
+                    </div>
+                </div>
+                <div class="bookCardName">
+                    <a href="book.php?id=<?php echo $list['id'] ?>" class="card-text text-uppercase text-break fw-bold text-decoration-none">
+                        <?php echo htmlspecialchars($list['name']) ?>
+                    </a>
+                    <p class="card-text">Price - ₹<?php echo $list['rent'] ?> Per day</p>
                 </div>
             </div>
-            <div id="bookCardName">
-                <a href="book.php?id=<?php echo $list['id'] ?>"
-                    class="card-text text-uppercase text-break fw-bold text-decoration-none">
-                    <?php echo $list['name'] ?>
-                </a>
-                <p class="card-text">Price- ₹<?php echo $list['rent'] ?> Per day</p>
-            </div>
-        </div>
         <?php } ?>
     </div>
 </div>
+
 <style>
 .card {
     border: none;
@@ -113,7 +105,6 @@ $$ language plpgsql; "select *from books where best_seller=1 limit 8";
     opacity: 0.8;
 }
 
-/* Overlay Effect */
 .overlay {
     position: absolute;
     top: 50%;
@@ -134,50 +125,46 @@ $$ language plpgsql; "select *from books where best_seller=1 limit 8";
     animation: fade 0.5s;
 }
 
-/* Rent Button */
 .rent-btn {
-    background-color: --34495e;
-    color: --ffffff;
+    background-color: #34495e;
+    color: #ffffff;
     font-weight: bold;
     padding: 10px 20px;
     border-radius: 25px;
-    box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.2);
     text-transform: uppercase;
     transition: background 0.3s ease-in-out;
 }
 
 .rent-btn:hover {
-    background-color: --fff;
-    color: --34495e;
+    background-color: #ffffff;
+    color: #34495e;
 }
 
-/* SQLINES DEMO *** ice */
---bookCardName {
+.bookCardName {
     padding: 15px;
-    background: --ffffff;
+    background: #ffffff;
     text-align: center;
     text-transform: uppercase;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
 }
 
---bookCardName a {
+.bookCardName a {
     font-size: 1.1rem;
-    color: --2c3e50;
+    color: #2c3e50;
     font-weight: bold;
     transition: color 0.3s ease-in-out;
 }
 
---bookCardName a:hover {
-    color: --f1c40f;
+.bookCardName a:hover {
+    color: #f1c40f;
 }
 
 .card-text {
-    color: --7f8c8d;
+    color: #7f8c8d;
     font-size: 1rem;
 }
 
-/* SQLINES DEMO *** mation */
 @keyframes fade {
     0% {
         opacity: 0;
@@ -187,4 +174,5 @@ $$ language plpgsql; "select *from books where best_seller=1 limit 8";
     }
 }
 </style>
-<?php require('footer.php') ?>
+
+<?php require('footer.php'); ?>
