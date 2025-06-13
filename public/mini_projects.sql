@@ -214,7 +214,7 @@ ALTER TABLE public._users OWNER TO rebasedata;
 INSERT INTO admin (email, password, name, role)
 VALUES (
   'admin@bookheaven.com',
-  crypt('admin123', gen_salt('bf')),
+  '$2y$10$8dzsWAvjJKJ7K5OpEh3eEetTdo8zFl9XQn1BdAeMZxscsWJ9PfDwW',
   'Super Admin',
   'Super Admin'
 );
