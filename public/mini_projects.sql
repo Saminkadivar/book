@@ -38,13 +38,13 @@ SET default_with_oids = false;
 -- Name: _admin; Type: TABLE; Schema: public; Owner: rebasedata
 --
 
-CREATE TABLE public._admin (
-    id smallint,
-    email character varying(23) DEFAULT NULL::character varying,
-    password character varying(60) DEFAULT NULL::character varying,
-    name character varying(5) DEFAULT NULL::character varying,
-    role character varying(11) DEFAULT NULL::character varying,
-    created_at character varying(19) DEFAULT NULL::character varying
+CREATE TABLE IF NOT EXISTS admin (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(50) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  role VARCHAR(30) CHECK (role IN ('Super Admin','Admin','manager')) DEFAULT 'Admin',
+  created_at TIMESTAMP DEFAULT current_timestamp
 );
 
 
